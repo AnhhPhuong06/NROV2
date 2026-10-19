@@ -1,0 +1,27 @@
+workflows:
+  ios-unsigned:
+    name: HuyenThoaiBoy - unsigned IPA
+    instance_type: mac_mini_m2
+    max_build_duration: 60
+    environment:
+      xcode: "16.4"
+    triggering:
+      events:
+        - push
+      branch_patterns:
+        - pattern: main
+          include: true
+      cancel_previous_builds: true
+    scripts:
+      - name: Download Unity static libraries from Git LFS
+        script: |
+          set -euo pipefail
+          git lfs install --local --skip-smudge
+          git lfs pull
+      - name: Show Xcode version
+        script: xcodebuild -version
+      - name: Build and package unsigned iOS IPA
+        script: bash scripts/build-unsigned-ipa.sh
+    artifacts:
+      - build/ipa/*.ipa
+      - build/xcodebuild.log
