@@ -46,7 +46,7 @@ if [[ "$app_count" -ne 1 ]]; then
 fi
 
 executable=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleExecutable' "$app_path/Info.plist")
-lipo -verify_arch arm64 "$app_path/$executable"
+lipo "$app_path/$executable" -verify_arch arm64
 if codesign -dv "$app_path" 2>/dev/null; then
   echo '::error::The app is signed; expected an unsigned build.'
   exit 1
